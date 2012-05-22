@@ -1,6 +1,6 @@
 import modera_config
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 engine_table = {}
 def get_db_engine(uri=None, *args, **kwargs):
@@ -18,8 +18,6 @@ def create_session(engine=None):
     engine = get_db_engine() if not engine else engine
     uri = str(engine.url)
     if uri not in session_maker_table:
-        session_maker_table[uri] = sessionmaker()
-        session_maker_table[uri].configure(bind=engine)
+        session_maker_table[uri] = scoped_session(sessionmaker(engine))
     return session_maker_table[uri]()
-
 

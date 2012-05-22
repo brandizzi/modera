@@ -1,8 +1,10 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Text, Sequence, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from modera.util import get_hashed_password
+from modera.db import create_session
 
 Base = declarative_base()
 
@@ -26,3 +28,12 @@ class User(Base):
             self.user_id, repr(self.fullname), 
             repr(self.username), repr(self.password))
 
+def authenticate(username, password):
+    session = create_session()
+    password = get_hashed_password(password)
+    try:
+        user = session.query(User).filter_by(
+                username=username, password=password).one()
+    except (MultipleResultsFound, NoResultFound) as e:
+        user = None
+    return user
