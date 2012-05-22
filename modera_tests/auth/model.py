@@ -4,9 +4,9 @@ import hashlib
 import modera.db
 import modera.util
 import modera_config
-from modera.auth.db.models import User, authenticate
+from modera.auth.model import User, authenticate
 
-class ModelsTestCase(unittest.TestCase):
+class ModelTestCase(unittest.TestCase):
 
     def test_hash_password(self):
         u = User('Juliana Vilela', 'juju', password='1234')
